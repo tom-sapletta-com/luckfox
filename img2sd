@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #    Writes an image (.img) or to the SD card direct from existing .env.txt for LuckFox Pico Pro/Max
 #    With added safety features:
 #    - Disk selection validation
