@@ -1,46 +1,3 @@
-def quick_verify_data(source_file: str, device: str, offset: int, size: int) -> bool:
-    """Quick verification by sampling data at different positions."""
-    SAMPLE_SIZE = 1024 * 1024  # 1MB samples
-    file_size = os.path.getsize(source_file)
-    
-    # Take samples at start, middle and end
-    positions = [
-        0,  # Start
-        file_size // 2,  # Middle
-        max(0, file_size - SAMPLE_SIZE)  # End
-    ]
-    
-    try:
-        for pos in positions:
-            # Read sample from source file
-            with open(source_file, 'rb') as f:
-                f.seek(pos)
-                source_sample = f.read(SAMPLE_SIZE)
-                
-            # Read sample from device
-            cmd = [
-                'dd',
-                f"if={device}",
-                f"skip={(offset + pos)//1024}",
-                f"count={SAMPLE_SIZE//1024}",
-                'bs=1k',
-                'iflag=skip_bytes,count_bytes'
-            ]
-            proc = subprocess.run(cmd, capture_output=True)
-            device_sample = proc.stdout
-            
-            if source_sample != device_sample:
-                return False
-                
-        return True
-    except Exception as e:
-        print(f"Error during quick verification: {e}")
-        return False#!/usr/bin/python3
-
-# == BLKENVFLASH == written by Rene K. Mueller <spiritdude@gmail.com>
-# == BLKENVFLASH == improved by Tom Sapletta <info@softreck.dev>
-#
-# Description:
 #    Writes an image (.img) or to the SD card direct from existing .env.txt for LuckFox Pico Pro/Max
 #    With added safety features:
 #    - Disk selection validation
@@ -48,14 +5,14 @@ def quick_verify_data(source_file: str, device: str, offset: int, size: int) -> 
 #    - Size validation
 #    - Interactive disk selection
 #
-#       % ./blkenvflash disk.img
+#       % ./img2sd disk.img
 #       -- inquery with `lsblk` which device is your SD card resides --
 #       % sudo dd if=disk.img of=/dev/sdX bs=1M; sync
 #
 #       -- or do in one step -- 
-#       % sudo ./blkenflash /dev/sdX
+#       % sudo ./img2sd /dev/sdX
 #
-# License: MIT
+#     images: https://drive.google.com/drive/folders/1r6Ulc_crJar1entKbK7GEJSq14HXL8ao
 
 import os
 import sys
@@ -66,7 +23,7 @@ import atexit
 import hashlib
 from typing import Dict, List, Tuple, Optional
 
-VERSION = '0.0.2'
+VERSION = '0.0.1'
 
 def get_disk_info() -> List[Dict[str, str]]:
     """Get information about available disks using lsblk."""
@@ -284,6 +241,45 @@ def select_device() -> Optional[str]:
         print("\nDevice selection cancelled.")
         return None
 
+def quick_verify_data(source_file: str, device: str, offset: int, size: int) -> bool:
+    """Quick verification by sampling data at different positions."""
+    SAMPLE_SIZE = 1024 * 1024  # 1MB samples
+    file_size = os.path.getsize(source_file)
+    
+    # Take samples at start, middle and end
+    positions = [
+        0,  # Start
+        file_size // 2,  # Middle
+        max(0, file_size - SAMPLE_SIZE)  # End
+    ]
+    
+    try:
+        for pos in positions:
+            # Read sample from source file
+            with open(source_file, 'rb') as f:
+                f.seek(pos)
+                source_sample = f.read(SAMPLE_SIZE)
+                
+            # Read sample from device
+            cmd = [
+                'dd',
+                f"if={device}",
+                f"skip={(offset + pos)//1024}",
+                f"count={SAMPLE_SIZE//1024}",
+                'bs=1k',
+                'iflag=skip_bytes,count_bytes'
+            ]
+            proc = subprocess.run(cmd, capture_output=True)
+            device_sample = proc.stdout
+            
+            if source_sample != device_sample:
+                return False
+                
+        return True
+    except Exception as e:
+        print(f"Error during quick verification: {e}")
+        return False#!/usr/bin/python3
+        
 def main():
     """Main function."""
     me = os.path.basename(sys.argv[0])
