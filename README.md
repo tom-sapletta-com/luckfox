@@ -22,7 +22,7 @@ Tool for managing multiple SD card flashing operations simultaneously.
 1. Clone or download the repository:
 ```bash
 git clone https://github.com/tom-sapletta-com/luckfox.git
-cd luckfox-flash-tools
+cd luckfox
 ```
 
 2. Make scripts executable:
