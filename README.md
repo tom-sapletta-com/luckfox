@@ -173,6 +173,26 @@ sudo umount /dev/sdX*
    - Clear error messages
    - Safe cleanup operations
 
+
+
+
+## SSH Login
+[SSH/Telnet Login - LUCKFOX WIKI](https://wiki.luckfox.com/Luckfox-Pico/Luckfox-Pico-RV1106/Luckfox-Pico-Pro-Max/SSH-Telnet-Login/)
+
+The latest firmware of the Luckfox Pico series enables SSH by default. 
+Since Luckfox Pico and Luckfox Pico Mini A/B do not have an Ethernet port, USB connection with a static IP is used for login. 
+LuckFox Pico Plus/Pro/Max can use the IP assigned by the Ethernet port for login.
+
+**Ubuntu**
+```bash
+Login: pico
+Password: luckfox
+```
+    
+
+
+
+
 ## Contributing
 
 1. Fork the repository
