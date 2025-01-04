@@ -9,7 +9,6 @@
 # Usage:
 #    % sudo ./multiflash.py
 #
-# License: MIT
 
 import os
 import sys
